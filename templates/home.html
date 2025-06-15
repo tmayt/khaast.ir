@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-4">
+    {% for post in posts %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-header">
+            <p class="mt-2">{{post.creator.get_full_name}}</p>
+            <p>{{post.creator.username}}</p>
+          </div>
+          <h5 class="card-title mt-2">{{ post.title }}</h5>
+          <p class="card-text">{{ post.body }}</p>
+
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#replies-{{ post.id }}" aria-expanded="false" aria-controls="replies-{{ post.id }}">
+              نمایش پاسخ ها
+            </button>
+            <button class="btn btn-primary mb-2" onclick="addReply({{ post.id }})">درج پاسخ</button>
+          </div>
+
+          <!-- Collapse container for replies -->
+          <div class="collapse" id="replies-{{ post.id }}">
+            <div class="card card-body">
+              {% if post.replies %}
+                <ul class="list-group">
+                  {% for reply in post.replies %}
+                    <li class="list-group-item">{{ reply.text }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <ul class="list-group" id="reply-{{ post.id }}">
+                  <li class="list-group-item" id="empty-{{ post.id }}">
+                    هنوز پاسخی وجود ندارد.
+                  </li>
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- SweetAlert2 script CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function addReply(postId) {
+    Swal.fire({
+      title: 'درج پاسخ',
+      input: 'textarea',
+      inputLabel: 'پاسخ خود را وارد کنید',
+      inputPlaceholder: 'متن پاسخ شما...',
+      showCancelButton: true,
+      confirmButtonText: 'ارسال',
+      cancelButtonText: 'انصراف',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'لطفاً یک پاسخ وارد کنید!';
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let list = document.getElementById(`replies-${postId}`)
+        list.innerHTML += `
+          <li class="list-group-item">${result.value}</li>
+        `
+        document.getElementById(`empty-${postId}`).remove()
+        Swal.fire('با موفقیت ارسال شد!', '', 'success');
+      }
+    });
+  }
+</script>
+{% endblock content %}
