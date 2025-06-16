@@ -27,6 +27,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://khaast.ir",
+    "https://www.khaast.ir",
+]
+
 
 # Application definition
 
