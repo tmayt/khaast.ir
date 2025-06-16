@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4sesm&jf%$ksx7c%b62=#n@7@dfxuq7x(i+)wdj7^1fpbc8u)c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -119,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -128,3 +129,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DJANGO_SIMPLE_FORUM_TOPICS_PER_PAGE = 10
 DJANGO_SIMPLE_FORUM_REPLIES_PER_PAGE = 10
 DJANGO_SIMPLE_FORUM_FILTER_PROFANE_WORDS = True
+
+try:from .local_settings import *
+except:pass
