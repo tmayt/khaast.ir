@@ -11,7 +11,7 @@ services:
       - ./nginx/khaast.ir.crt:/etc/ssl/certs/khaast.ir.crt
       - ./nginx/khaast.ir.key:/etc/ssl/private/khaast.ir.key
     ports:
-      - "8001:443"
+      - "8001:80"
     depends_on:
       - website
     restart: always
