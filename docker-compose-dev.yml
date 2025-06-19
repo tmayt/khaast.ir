@@ -8,8 +8,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./website/static:/usr/share/nginx/html/website/static
       - ./website/media:/usr/share/nginx/html/website/media      
-      - ./nginx/khaast.ir.crt:/etc/ssl/certs/khaast.ir.crt
-      - ./nginx/khaast.ir.key:/etc/ssl/private/khaast.ir.key
     ports:
       - "80:80"
     depends_on:
