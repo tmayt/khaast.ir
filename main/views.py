@@ -37,3 +37,12 @@ def home(request):
 
 def install(request):
     return render(request,'install.html')
+
+def set_location(request):
+    try:
+        user = request.user
+        user.last_location = request.GET['c']
+        user.save()
+        return HttpResponse('success')
+    except:
+        return HttpResponse('error')

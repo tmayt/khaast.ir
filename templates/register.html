@@ -65,6 +65,25 @@
           >
         </div>
         <div class="mb-3">
+          <label for="national_id" class="form-label">کد ملی</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="national_id" 
+            name="national_id" 
+            placeholder="کد ملی خود را وارد کنید" 
+            required
+          >
+        </div>
+        <div class="mb-3">
+          <label for="blood_group" class="form-label">گروه خونی</label>
+          <select name="blood_group" id="blood_group" class="form-control">
+            {% for group in blood_groups %}
+            <option value="{{group.0}}">{{group.1}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
           <label for="password" class="form-label">گذرواژه</label>
           <input 
             type="password" 

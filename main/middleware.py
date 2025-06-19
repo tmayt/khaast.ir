@@ -11,7 +11,7 @@ class InstallMiddleware:
             if request.GET.get('pwa'):
                 request.session['pwa'] = request.GET.get('pwa')
 
-            if not request.user.is_authenticated and not 'login' in request.path:
+            if not request.user.is_authenticated and not 'login' in request.path and not 'register' in request.path:
                 return redirect(reverse('login'))
 
         if not request.GET.get('pwa') and not request.session.get('pwa') and not 'install' in request.path:

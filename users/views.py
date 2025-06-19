@@ -1,6 +1,7 @@
 import re
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, get_user_model
+from users.models import Profile
 
 User = get_user_model()
 
@@ -30,11 +31,13 @@ def login(request):
 def register(request):
     error = None
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        password = request.POST.get('password', '').strip()
-        repassword = request.POST.get('repassword', '').strip()
-        fname = request.POST.get('fname', '').strip()
-        lname = request.POST.get('lname', '').strip()
+        username = request.POST['username'].strip()
+        password = request.POST['password'].strip()
+        repassword = request.POST['repassword'].strip()
+        fname = request.POST['fname'].strip()
+        lname = request.POST['lname'].strip()
+        blood_group = request.POST['blood_group'].strip()
+        national_id = request.POST['national_id'].strip()
 
         if not re.match(PHONE_REGEX, username):
             error = "شماره موبایل معتبر نیست."
@@ -44,14 +47,18 @@ def register(request):
             error = "رمزهای عبور مطابقت ندارند."
         elif User.objects.filter(username=username).exists():
             error = "کاربری با این شماره موبایل قبلا ثبت شده است."
+        elif len(national_id) != 10 or not national_id.isdigit() :
+            error = "کد ملی اشتباه است."
         else:
             user = User.objects.create_user(
                 username=username,
                 password=password,
                 first_name=fname,
                 last_name=lname,
+                blood_group=blood_group,
+
             )
             auth_login(request, user)
             return redirect('home')
 
-    return render(request, 'register.html', {'error': error})
+    return render(request, 'register.html', {'blood_groups': Profile.BLOOD_CHOICES, 'error': error})
