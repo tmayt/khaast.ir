@@ -155,3 +155,4 @@ get_backup.py
 /backend/ml/models
 
 /local
+/website/static

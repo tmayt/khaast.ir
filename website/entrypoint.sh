@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 python manage.py makemigrations
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
-# Start uWSGI
-uwsgi --ini ./uwsgi.ini
+gunicorn --bind 0.0.0.0:8000 khaast.wsgi:application
