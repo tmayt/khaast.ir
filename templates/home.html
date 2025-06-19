@@ -2,6 +2,11 @@
 
 {% block content %}
 <div class="container my-4">
+  <div class="d-flex mb-3">
+    {% for topic in topics %}
+      <a href="{% url "home" %}?topic={{topic.0}}" class="btn btn-secondary">{{topic.1}}</a>
+    {% endfor %}
+  </div>
   <div class="row g-4">
     {% for post in posts %}
     <div class="col-12 col-md-6 col-lg-4">
@@ -26,8 +31,8 @@
             <div class="card card-body">
               {% if post.replies %}
                 <ul class="list-group">
-                  {% for reply in post.replies %}
-                    <li class="list-group-item">{{ reply.text }}</li>
+                  {% for reply in post.replies.all %}
+                    <li class="list-group-item">{{reply.creator.get_full_name}} :{{ reply.text }}</li>
                   {% endfor %}
                 </ul>
               {% else %}
@@ -42,12 +47,11 @@
         </div>
       </div>
     </div>
+    {% empty %}
+    <h3>موردی یافت نشد</h3>
     {% endfor %}
   </div>
 </div>
-
-<!-- SweetAlert2 script CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
   function addReply(postId) {
@@ -66,12 +70,16 @@
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        let list = document.getElementById(`replies-${postId}`)
-        list.innerHTML += `
-          <li class="list-group-item">${result.value}</li>
-        `
-        document.getElementById(`empty-${postId}`).remove()
-        Swal.fire('با موفقیت ارسال شد!', '', 'success');
+
+        fetch(`{% url "home" %}?reply=${postId}&text=${result.value}`).then(() => {
+          let list = document.getElementById(`replies-${postId}`)
+          list.innerHTML += `
+            <li class="list-group-item">${result.value}</li>
+          `
+          document.getElementById(`empty-${postId}`).remove()
+          Swal.fire('با موفقیت ارسال شد!', '', 'success');
+        })
+
       }
     });
   }

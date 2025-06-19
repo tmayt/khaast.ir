@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ثبت‌نام</title>
+    <title>نصب برنامه</title>
     <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="apple-touch-icon" sizes="57x57" href="{% static 'pwa/apple-icon-57x57.png' %}">
     <link rel="apple-touch-icon" sizes="60x60" href="{% static 'pwa/apple-icon-60x60.png' %}">
@@ -28,69 +28,10 @@
 <body dir="rtl">
   <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card shadow-sm p-4" style="width: 350px;">
-      <h3 class="text-center mb-4">ثبت‌نام</h3>
-      <form method="POST" action="{% url 'register' %}">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="fname" class="form-label">نام</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="fname" 
-            name="fname" 
-            placeholder="نام خودرا وارد کنید" 
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="lname" class="form-label">نام خانوادگی</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="lname" 
-            name="lname" 
-            placeholder="نام خانوادگی خودرا وارد کنید" 
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="username" class="form-label">شماره تماس</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="username" 
-            name="username" 
-            placeholder="مثال : 09123456789" 
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">گذرواژه</label>
-          <input 
-            type="password" 
-            class="form-control" 
-            id="password" 
-            name="password" 
-            placeholder="گذرواژه خود را وارد کنید" 
-            required
-          >
-        </div>
-        <div class="mb-3">
-          <label for="repassword" class="form-label">تکرار گذرواژه</label>
-          <input 
-            type="password" 
-            class="form-control" 
-            id="repassword" 
-            name="repassword" 
-            placeholder="گذرواژه خود را تکرار کنید" 
-            required
-          >
-        </div>
-        <a href="{% url "login" %}">
-          <p>از قبل حساب کاربری دارم.</p>
-        </a>
-        <button type="submit" class="btn btn-primary w-100">ثبت</button>
-      </form>
+        <h3 class="text-center mb-4">نصب برنامه</h3>
+        <p>برای راحتی و دسترسی بهتر برنامه را نصب کنید</p>
+        <p>صبر کنید تا دکمه زیر فعال شود سپس آنرا فشار دهید.</p>
+        <button class="btn btn-info" id="install" disabled>نصب مستقیم</button>
     </div>
   </div>
   <script src="{% static 'sweetalert2.js' %}"></script>
@@ -104,7 +45,8 @@
     });
   </script>
   {% endif %}
-
     <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'pwa/pwa.js' %}"></script>
+
 </body>
 </html>
