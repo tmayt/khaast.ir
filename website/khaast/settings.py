@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     "https://khaast.ir",
     "https://www.khaast.ir",
+    "http://localhost:8001"
 ]
 
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'users',
     'main',
 ]

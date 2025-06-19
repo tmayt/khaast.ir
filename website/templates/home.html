@@ -1,87 +1,270 @@
-{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
 
-{% block content %}
-<div class="container my-4">
-  <div class="d-flex mb-3">
-    {% for topic in topics %}
-      <a href="{% url "home" %}?topic={{topic.0}}" class="btn btn-secondary">{{topic.1}}</a>
-    {% endfor %}
-  </div>
-  <div class="row g-4">
-    {% for post in posts %}
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-header">
-            <p class="mt-2">{{post.creator.get_full_name}}</p>
-            <p>{{post.creator.username}}</p>
-          </div>
-          <h5 class="card-title mt-2">{{ post.title }}</h5>
-          <p class="card-text">{{ post.body }}</p>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>خواست</title>
+        <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="apple-touch-icon" sizes="57x57" href="{% static 'pwa/apple-icon-57x57.png' %}">
+        <link rel="apple-touch-icon" sizes="60x60" href="{% static 'pwa/apple-icon-60x60.png' %}">
+        <link rel="apple-touch-icon" sizes="72x72" href="{% static 'pwa/apple-icon-72x72.png' %}">
+        <link rel="apple-touch-icon" sizes="76x76" href="{% static 'pwa/apple-icon-76x76.png' %}">
+        <link rel="apple-touch-icon" sizes="114x114" href="{% static 'pwa/apple-icon-114x114.png' %}">
+        <link rel="apple-touch-icon" sizes="120x120" href="{% static 'pwa/apple-icon-120x120.png' %}">
+        <link rel="apple-touch-icon" sizes="144x144" href="{% static 'pwa/apple-icon-144x144.png' %}">
+        <link rel="apple-touch-icon" sizes="152x152" href="{% static 'pwa/apple-icon-152x152.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'pwa/apple-icon-180x180.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'pwa/android-icon-192x192.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'pwa/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{% static 'pwa/favicon-96x96.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'pwa/favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
+        <meta name="msapplication-TileColor" content="#0050a0">
+        <meta name="msapplication-TileImage" content="{% static 'pwa/ms-icon-144x144.png' %}">
+        <meta name="theme-color" content="#0050a0">
 
-          <div class="d-flex justify-content-between">
-            <button class="btn btn-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#replies-{{ post.id }}" aria-expanded="false" aria-controls="replies-{{ post.id }}">
-              نمایش پاسخ ها
-            </button>
-            <button class="btn btn-primary mb-2" onclick="addReply({{ post.id }})">درج پاسخ</button>
-          </div>
+        {% block head %}{% endblock head %}
+        <style>
+            textarea{
+                width: -webkit-fill-available !important;
+                margin: 10px 0 !important;
+            }
+            input{
+                width: -webkit-fill-available !important;
+                margin: 10px 0 !important;
+            }
+            .btn{
+                height: fit-content;
+            }
+            .navbar-toggler:focus{
+                box-shadow: none !important;
+            }
+        </style> 
+    </head>
+    <body dir="rtl">
+    <main class="container">
+        <div class="bg-light rounded mt-3">
+            <div class="container my-4">
+                <div class="d-flex flex-wrap mb-3">
+                    {% for topic in topics %}
+                    <a href="{% url "home" %}?topic={{topic.0}}" class="btn {% if request.GET.topic == topic.0 %}btn-primary{% else %}btn-secondary{% endif %} m-2">{{topic.1}}</a>
+                    {% endfor %}
+                </div>
+                <hr>
+                <div class="row g-4">
+                    {% for post in posts %}
+                        <div class="col-12 col-md-6 col-lg-4" id="post-{{post.id}}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-header d-flex flex-wrap justify-content-between">
+                                        <div>
+                                            <p class="mt-2">{{post.creator.get_full_name}}</p>
+                                            <p>{{post.creator.username}}</p>
+                                            <p>{{post.created|naturaltime}}</p>
+                                            <p>تعداد بازدید : {{post.view}}</p>
+                                        </div>
+                                        <button class="btn btn-info mb-3" onclick="deactivate({{ post.id }})">لغو</button>
+                                    </div>
+                                    <h5 class="card-title mt-2">{{ post.title }}</h5>
+                                    <p class="card-text">{{ post.body }}</p>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#replies-{{ post.id }}" aria-expanded="false" aria-controls="replies-{{ post.id }}">
+                                        نمایش پاسخ ها
+                                        </button>
+                                        <button class="btn btn-primary mb-3" onclick="addReply({{ post.id }})">درج پاسخ</button>
+                                    </div>
 
-          <!-- Collapse container for replies -->
-          <div class="collapse" id="replies-{{ post.id }}">
-            <div class="card card-body">
-              {% if post.replies %}
-                <ul class="list-group">
-                  {% for reply in post.replies.all %}
-                    <li class="list-group-item">{{reply.creator.get_full_name}} :{{ reply.text }}</li>
-                  {% endfor %}
-                </ul>
-              {% else %}
-                <ul class="list-group" id="reply-{{ post.id }}">
-                  <li class="list-group-item" id="empty-{{ post.id }}">
-                    هنوز پاسخی وجود ندارد.
-                  </li>
-                </ul>
-              {% endif %}
+                                    <!-- Collapse container for replies -->
+                                    <div class="collapse" id="replies-{{ post.id }}">
+                                        <div class="card card-body">
+                                        {% if post.replies.count != 0 %}
+                                            <ul class="list-group">
+                                            {% for reply in post.replies.all %}
+                                                <li class="list-group-item">{{reply.creator.get_full_name}} :{{ reply.text }}</li>
+                                            {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <ul class="list-group" id="reply-{{ post.id }}">
+                                                <li class="list-group-item" id="empty-{{ post.id }}">
+                                                    هنوز پاسخی وجود ندارد.
+                                                </li>
+                                            </ul>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h3>موردی یافت نشد</h3>
+                    {% endfor %}
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-    {% empty %}
-    <h3>موردی یافت نشد</h3>
-    {% endfor %}
-  </div>
-</div>
-
-<script>
-  function addReply(postId) {
-    Swal.fire({
-      title: 'درج پاسخ',
-      input: 'textarea',
-      inputLabel: 'پاسخ خود را وارد کنید',
-      inputPlaceholder: 'متن پاسخ شما...',
-      showCancelButton: true,
-      confirmButtonText: 'ارسال',
-      cancelButtonText: 'انصراف',
-      inputValidator: (value) => {
-        if (!value) {
-          return 'لطفاً یک پاسخ وارد کنید!';
+    </main>
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark" dir="ltr">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url "home" %}">خواست</a>
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse" id="navbarCollapse" dir="rtl">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <button class="btn nav-link" onclick="handleNewRequest()">درخواست جدید</a>
+                </li>
+                <li class="nav-item">
+                    <button class="btn nav-link" onclick="handleEmergency()">شرایط اضطراری</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+    <script src="{% static 'sweetalert2.js' %}"></script>
+    <script>
+    function addReply(postId) {
+        Swal.fire({
+        title: 'درج پاسخ',
+        input: 'textarea',
+        inputLabel: 'پاسخ خود را وارد کنید',
+        inputPlaceholder: 'متن پاسخ شما...',
+        showCancelButton: true,
+        confirmButtonText: 'ارسال',
+        cancelButtonText: 'انصراف',
+        inputValidator: (value) => {
+            if (!value) {
+            return 'لطفاً یک پاسخ وارد کنید!';
+            }
         }
-      }
+        }).then((result) => {
+        if (result.isConfirmed) {
+
+            fetch(`{% url "home" %}?reply=${postId}&text=${result.value}`).then(() => {
+            let list = document.getElementById(`replies-${postId}`)
+            list.innerHTML += `
+                <li class="list-group-item">${result.value}</li>
+            `
+            document.getElementById(`empty-${postId}`).remove()
+            Swal.fire('با موفقیت ارسال شد!', '', 'success');
+            })
+
+        }
+        });
+    }
+    function deactivate(postId) {
+        Swal.fire({
+        title: 'لغو درخواست',
+        text: 'آیا از لغو درخواست خود مطمعن هستید؟',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'لغو',
+        cancelButtonText: 'انصراف',
+        }).then((result) => {
+        if (result.isConfirmed) {
+
+            fetch(`{% url "home" %}?deactivate=${postId}`).then(() => {
+            document.getElementById(`post-${postId}`).remove()
+            Swal.fire('درخواست شما لغو شد!', '', 'success');
+            })
+
+        }
+        });
+    }
+    </script>
+
+    <script>
+    function handleNewRequest() {
+    Swal.fire({
+        title: 'درخواست جدید {% for topic in topics %}{% if topic.0 == request.GET.topic %}({{topic.1}}){% endif %}{% endfor %}',
+        html:
+        '<form id="swal-form" method="post">' + 
+        '{% csrf_token %}' +
+        '<input id="swal-title" name="title" class="swal2-input" placeholder="عنوان">' +
+        '<textarea id="swal-description" name="description" class="swal2-textarea" placeholder="توضیحات"></textarea>' +
+        '</form>',
+        showCancelButton: true,
+        confirmButtonText: 'ارسال',
+        cancelButtonText: 'انصراف',
+        focusConfirm: false,
+        preConfirm: () => {
+        const title = document.getElementById('swal-title').value.trim();
+        const description = document.getElementById('swal-description').value.trim();
+
+        if (!title || !description) {
+            Swal.showValidationMessage('لطفاً عنوان و توضیحات را وارد کنید');
+            return false;
+        }
+        return { title, description };
+        }
     }).then((result) => {
-      if (result.isConfirmed) {
-
-        fetch(`{% url "home" %}?reply=${postId}&text=${result.value}`).then(() => {
-          let list = document.getElementById(`replies-${postId}`)
-          list.innerHTML += `
-            <li class="list-group-item">${result.value}</li>
-          `
-          document.getElementById(`empty-${postId}`).remove()
-          Swal.fire('با موفقیت ارسال شد!', '', 'success');
-        })
-
-      }
+        if (result.isConfirmed) {
+            const form = document.getElementById('swal-form')
+            form.submit()
+        }
     });
-  }
-</script>
-{% endblock content %}
+    }
+
+    function handleEmergency() {
+    Swal.fire({
+        title: 'شرایط اضطراری',
+        text: 'آیا از انجام این عملیات اضطراری اطمینان دارید؟',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، ادامه بده',
+        cancelButtonText: 'انصراف'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        // You can trigger your emergency logic here
+        Swal.fire('درخواست اضطراری ثبت شد', '', 'success');
+        }
+    });
+    }
+    </script>
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+    {% if submit %}
+    <script>Swal.fire('با موفقیت ثبت شد!', '', 'success');</script>
+    {% endif %}
+    {% block script %}{% endblock script %}
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, handleError);
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+            fetch('{% url "set-location" %}?c=' + latitude + ',' + longitude)
+        }
+
+        function handleError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    console.log("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    console.log("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    console.log("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    console.log("An unknown error occurred.");
+                    break;
+            }
+        }
+        setInterval(() => {
+            getLocation()
+        }, 1000 * 60 * 5)
+
+    </script>
+    </body>
+</html>

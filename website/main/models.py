@@ -16,13 +16,19 @@ class Post(models.Model):
     title = models.CharField(max_length=60)
     TOPIC_CHOICES = [
         ('a', 'عمومی'),
+        ('b', 'اضطراری'),
+        ('c', 'اخبار'),
+        ('d', 'نقدی'),
+        ('e', 'سکونت'),
     ]
     topic = models.CharField(max_length=1, choices=TOPIC_CHOICES, default='a')
     body = models.TextField()
     creator = models.ForeignKey('users.Profile', on_delete=models.CASCADE, blank=True, null=True)
     user_ip = models.GenericIPAddressField(blank=True, null=True)
 
+    active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
+    view = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

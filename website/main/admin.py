@@ -3,7 +3,7 @@ from .models import Post, Reply
 
 class PostAdmin(admin.ModelAdmin):
     search_fields = ["title", "creator"]
-    list_display = ["title", "topic", "creator", "created"]
+    list_display = ["title", "topic", "creator", "created", 'active']
 
 admin.site.register(Post, PostAdmin)
 
