@@ -1,6 +1,6 @@
 var cacheKeeplist = {
-    'static' : 'static-v' + 1.5,
-    'dynamic' : 'dynamic-v' + 1.5,
+    'static' : 'static-v' + 1.6,
+    'dynamic' : 'dynamic-v' + 1.6,
 };
 
 self.addEventListener('install', (event) => {
