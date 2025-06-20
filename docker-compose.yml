@@ -14,7 +14,6 @@ services:
       - website
     restart: always
 
-
   website:
     build:
       context: ./website

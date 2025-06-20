@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     "https://khaast.ir",
     "https://www.khaast.ir",
+    "https://khaast.tmayt.ir",
     "http://localhost:8001"
 ]
 
