@@ -61,9 +61,9 @@
                                 <div class="card-body">
                                     <div class="card-header d-flex flex-wrap justify-content-between">
                                         <div>
-                                            <p class="mt-2">{{post.creator.get_full_name}}</p>
-                                            <p>{{post.creator.username}}</p>
-                                            <p>{{post.created|naturaltime}}</p>
+                                            <p class="mt-2 mb-0">{{post.creator.get_full_name}}</p>
+                                            <p class="mb-0">{{post.creator.username}}</p>
+                                            <p class="mb-0">{{post.created|naturaltime}}</p>
                                             <p>تعداد بازدید : {{post.view}}</p>
                                         </div>
                                         <button class="btn btn-info mb-3" onclick="deactivate({{ post.id }})">لغو</button>

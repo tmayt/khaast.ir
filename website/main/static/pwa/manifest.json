@@ -1,6 +1,6 @@
 {
     "name": "خواست",
-    "short_name": "khaast",
+    "short_name": "خواست",
     "start_url": "/?pwa=1",
     "icons": [
         {
@@ -42,6 +42,6 @@
     ],
     "theme_color": "#0d1117",
     "background_color": "#0d1117",
-    "display": "fullscreen",
+    "display": "standalone",
     "orientation": "portrait"
 }
