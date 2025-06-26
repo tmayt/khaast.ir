@@ -1,20 +1,29 @@
-name: deploy-chabokan
+name: Deploy to Server
+
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "18"
-      - name: update-chabokan
-        env:
-          CHABOKAN_TOKEN: ${{ secrets.CHABOKAN_TOKEN }}
-        run: |
-          npm install -g @chabokan.net/cli
-          chabok login -t $CHABOKAN_TOKEN
-          chabok deploy -s khaast
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        port: '22'
+        script: |
+          cd khaast
+          git pull
+          docker-compose build
+          docker-compose up -d
+          docker system prune -f --filter "until=168h"
+
