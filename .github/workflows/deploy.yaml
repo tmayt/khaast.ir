@@ -21,7 +21,7 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         port: '22'
         script: |
-          cd khaast
+          cd khaast.ir
           git pull
           docker-compose build
           docker-compose up -d
