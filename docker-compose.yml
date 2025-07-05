@@ -9,7 +9,7 @@ services:
       - ./website/static:/usr/share/nginx/html/website/static
       - ./website/media:/usr/share/nginx/html/website/media      
     ports:
-      - "8002:80"
+      - "8001:80"
     depends_on:
       - website
     restart: always
