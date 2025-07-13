@@ -156,3 +156,4 @@ get_backup.py
 
 /local
 /website/static
+deploy.sh
